@@ -62,17 +62,23 @@ def get_booking(request, movie_id):
     })
 
 def payment(request):
-    test_data = request.session.get('test_data')
+    balance = getBalance()
+    booking_data = request.session.get('booking_data')
+    #this make booked seats into proper sequence of numbers
+    print(booking_data['booked_seats'].replace('\n', '').replace('\r', '').replace(' ', ''))
     return render(request, "payment.html", {
-        "test_data" : test_data
+        "booking_seats" : booking_data,
+        "name" : booking_data["name"],
+        "fund" : format(balance, ','),
     })
 
 # helpers
 
 def post_booking(request):
-    request.session['test_data'] = request.POST
+    request.session['booking_data'] = request.POST
     return HttpResponseRedirect('/')
     
 def getBalance():
     
     return Fund.objects.get(pk=1).current_fund
+
