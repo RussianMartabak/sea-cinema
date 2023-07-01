@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h5 class="text-center pt-3 pb-1">Available Movies</h5>
+<div class="container ">
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col d-flex justify-content-center movie">
+            <div class="card">
+                <img src="{% static movie.poster %}" class="card-img-top poster" alt="">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="text-center">{{movie.title}}</h5>                    
+                    <div class="row">
+                        <div class="col">
+                            <p class="card-text text-center">{{movie.age_rating}}+</p>
+                        </div>
+                        <div class="col">
+                            <p class="card-text text-center">{{movie.genre}}</p>
+                        </div>
+                        <a href="movie/{{movie.id}}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

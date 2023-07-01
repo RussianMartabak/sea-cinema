@@ -1,0 +1,36 @@
+<html lang="en">
+{% load static %}
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'scripts/base.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEA Cinema</title>
+</head>
+<body>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <div class="container-fluid pt-3 border-bottom">
+        <div class="row justify-content-between">
+            <div class="col">
+
+            </div>
+            <div class="col inv-link" id="home" >
+                <h3 class="text-center fw-bold mb-0">SEA Cinema</h2>
+                <p class="text-center fs-5">ASEAN's Official Cinema<p>
+            </div>
+            <div class="col position-relative">
+                <p class="text-center mb-2 fw-bold">Balance</p>
+                <p class="text-center">{{fund}}</p>
+                <a class="stretched-link" href="{% url 'balance' %}"></a>
+            </div>
+        </div>
+    </div>
+    
+    
+    {% block content %}
+    {% endblock %}
+</body>
+<script src="{% static 'scripts/base.js' %}"></script>
+</html>

@@ -1,0 +1,18 @@
+.inv-link:hover {
+    cursor: pointer;
+}
+
+.card{
+    width: 170px;
+}
+
+.poster{
+    height:255px;
+    width:168.18px;
+}
+
+.box{
+    height:50px;
+    width:50px;
+    text-align: center;
+}

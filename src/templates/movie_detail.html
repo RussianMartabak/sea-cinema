@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-lg mt-3">
+    <div class="row">
+        <div class="col-4 d-flex justify-content-center">
+            <img class= "poster mt-2" src="{% static movie.poster %}" alt="">
+        </div>
+        <div class="col-8">
+            <h5>{{movie.title}}</h5>
+            <p>{{movie.storyline}}</p>
+            <p><span class="fw-bold">Genre:</span> {{movie.genre}}</p>
+            <p><span class="fw-bold">Age Rating:</span> {{movie.age_rating}} or above</p>
+            <p><span class="fw-bold">Ticket Price:</span> {{price}} IDR</p>
+            <a href="{% url 'booking' movie.id %}" class="btn btn-primary">Buy Ticket</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
