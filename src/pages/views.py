@@ -3,7 +3,7 @@ from data.models import Movie
 from data.models import Fund
 from django.http import HttpResponseRedirect
 from data.models import Seating
-
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -65,12 +65,34 @@ def payment(request):
     balance = getBalance()
     booking_data = request.session.get('booking_data')
     #this make booked seats into proper sequence of numbers
-    print(booking_data['booked_seats'].replace('\n', '').replace('\r', '').replace(' ', ''))
-    return render(request, "payment.html", {
-        "booking_seats" : booking_data,
-        "name" : booking_data["name"],
-        "fund" : format(balance, ','),
-    })
+    booked_seats = convertToArray(booking_data["booked_seats"]) 
+    #movie_id is already saved on session
+    movie_id = request.session['movie_id']
+    quantity = len(booked_seats)
+    total_price = getTotalPrice(len(booked_seats), movie_id)
+    # pack all this things (name, total price, quantity, movie_id into a dictionary and put it in session)
+    # it all will be used in the POST request (redirect to home too)
+    order_data = {}
+    order_data['movie_title'] = Movie.objects.get(pk=movie_id).title
+    order_data['name'] = booking_data["name"]
+    order_data['total_price'] = total_price
+    order_data['quantity'] = quantity
+    request.session['order_data'] = order_data
+
+    if request.method == "GET":
+        return render(request, "payment.html", {
+            "booking_seats" : booked_seats,
+            "name" : booking_data["name"],
+            "fund" : format(balance, ','),
+            "total_price" : total_price,
+            "movie_title" : Movie.objects.get(pk=movie_id).title,
+            "quantity" : quantity,
+            'ticket_price' : Movie.objects.get(pk=movie_id).ticket_price
+        })
+    elif request.method == "POST":
+        order_data = request.session['order_data']
+        if order_data['total_price'] > balance:
+            return HttpResponse("epic fail")
 
 # helpers
 
@@ -82,3 +104,11 @@ def getBalance():
     
     return Fund.objects.get(pk=1).current_fund
 
+def convertToArray(string):
+    cs_string = string.replace('\n', '').replace('\r', '').replace(' ', '')
+    num_array = cs_string.split(',')
+    return num_array
+
+def getTotalPrice(qty, movie_id):
+    movie = Movie.objects.get(pk=movie_id)
+    return movie.ticket_price * qty

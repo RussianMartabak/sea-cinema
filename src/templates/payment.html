@@ -3,6 +3,39 @@
 
 {% block content %}
 
-{{booking_seats}}
-{{name}}
+<h5 class="text-center mt-3">Confirm Your Order</h5>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 mt-4 px-5">
+            <p class="text-end mt-1 fw-bold">Movie</p>
+            <p class="text-end mt-1 fw-bold">Ticket Price</p>
+            <p class="text-end mt-1 fw-bold">Quantity</p>
+            <p class="text-end mt-1 fw-bold">Seats</p>
+            <p class="text-end mt-1 fw-bold">Total Price</p>
+        </div>
+        <div class="col-6 mt-4 px-5">
+            <p class="text-start mt-1">{{movie_title}}</p>
+            <p class="text-start mt-1">{{ticket_price}}</p>
+            <p class="text-start mt-1">{{quantity}}</p>
+            <p class="text-start mt-1">
+                {% for seat in booking_seats %}
+                {{seat}}, 
+                {% endfor %}
+            </p>
+            <p class="text-start mt-1">{{total_price}}</p>
+            <p id="test"></p>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <button class="btn btn-primary w-25" id="confirm">Confirm Purchase</button>
+    </div>
+</div>
+
+<!--Modal trigger-->
+<button type="button" class="btn btn-primary invisible" data-bs-toggle="modal" data-bs-target="#poorModal" id="modalTrigger">
+    </button>
+
+<script src="{% static 'scripts/payment.js' %}"></script>
+
 {% endblock %}
