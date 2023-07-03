@@ -52,7 +52,29 @@
         </div>
       </div>
     </div>
+</div>
+
+<button type="button" class="btn btn-primary invisible" id="successModalTrigger" data-bs-toggle="modal" data-bs-target="#successModal">
+    </button>
+
+<!--Success modal shenanigans-->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Purchase Completed</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>You can now see your purchased tickets and transaction history on the balance page. You may also request a refund</p>
+        </div>
+        <div class="modal-footer">
+          <a href="/" class="btn btn-primary">Yay</a>
+        </div>
+      </div>
+    </div>
   </div>
+
 
 <script src="{% static 'scripts/payment.js' %}"></script>
 

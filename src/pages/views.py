@@ -78,6 +78,8 @@ def payment(request):
     order_data['name'] = booking_data["name"]
     order_data['total_price'] = total_price
     order_data['quantity'] = quantity
+    order_data['booked_seats'] = booked_seats
+    order_data['movie_id'] = movie_id
     request.session['order_data'] = order_data
 
     if request.method == "GET":
@@ -95,6 +97,21 @@ def payment(request):
         if order_data['total_price'] > balance:
             return HttpResponse("epic fail")
         else:
+            # fill in the seats and also the transaction records
+            # deduct from balance
+            current_balance = Fund.objects.get(pk=1)
+            current_balance.current_fund -= order_data['total_price']
+            current_balance.save()
+            #book the seat
+            booked_seats = order_data['booked_seats']
+            movie_id = order_data['movie_id']
+            movie_seats = Seating.objects.filter(movie_id_id = movie_id)
+            for seat in booked_seats:
+                # search based on seat number and movie id
+                target_seat = movie_seats.filter(seat_number=seat)[0]
+                target_seat.is_empty = False
+                target_seat.save()
+            
             return HttpResponse("success")
 
 # helpers

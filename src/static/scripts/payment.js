@@ -1,6 +1,7 @@
 const confirmButton = document.querySelector('#confirm');
 const testText = document.querySelector('#test');
 const poorModalTrigger = document.querySelector('#poorModalTrigger');
+const successModalTrigger = document.querySelector('#successModalTrigger');
 
 confirmButton.addEventListener('click', (ev) => {
     //do something
@@ -13,6 +14,9 @@ confirmButton.addEventListener('click', (ev) => {
                 result => {
                     if (result === "epic fail") {
                         poorModalTrigger.click();
+                    }
+                    else {
+                        successModalTrigger.click();
                     }
                     console.log(result)
                 },

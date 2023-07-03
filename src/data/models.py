@@ -19,7 +19,7 @@ class Seating(models.Model):
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, default = 1)
 
 class TransactionRecord(models.Model):
-    total = models.TextField()
+    total = models.IntegerField()
     seats = models.TextField()
     name = models.TextField()
     title = models.TextField()
