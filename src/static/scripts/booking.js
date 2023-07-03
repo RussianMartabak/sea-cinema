@@ -22,7 +22,7 @@ seat_buttons.forEach(e => e.addEventListener('click', (ev) => {
 confirm_button.addEventListener('click', (ev) => {
     console.log(form_is_valid());
     let formData = make_form_data()
-    if (form_is_valid) {
+    if (form_is_valid()) {
         submit(formData)
     }
 })

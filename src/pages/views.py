@@ -4,6 +4,7 @@ from data.models import Fund
 from django.http import HttpResponseRedirect
 from data.models import Seating
 from django.http import HttpResponse
+from data.models import TransactionRecord
 
 
 # Create your views here.
@@ -93,6 +94,8 @@ def payment(request):
         order_data = request.session['order_data']
         if order_data['total_price'] > balance:
             return HttpResponse("epic fail")
+        else:
+            return HttpResponse("success")
 
 # helpers
 

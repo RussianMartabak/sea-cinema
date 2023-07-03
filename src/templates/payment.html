@@ -32,9 +32,27 @@
     </div>
 </div>
 
-<!--Modal trigger-->
-<button type="button" class="btn btn-primary invisible" data-bs-toggle="modal" data-bs-target="#poorModal" id="modalTrigger">
+<!--Error Modal trigger-->
+<button type="button" id="poorModalTrigger" class="btn btn-primary invisible" data-bs-toggle="modal" data-bs-target="#poorModal" id="modalTrigger">
     </button>
+
+<!--Error Modal Schenanigans-->
+<div class="modal fade" id="poorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Your balance is insufficient</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Your balance is insufficient to continue purchase, please top up your balance.</p>
+        </div>
+        <div class="modal-footer">
+          <a href="{% url 'balance' %}" class="btn btn-primary">Top Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script src="{% static 'scripts/payment.js' %}"></script>
 

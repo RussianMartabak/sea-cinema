@@ -1,16 +1,21 @@
 const confirmButton = document.querySelector('#confirm');
 const testText = document.querySelector('#test');
-
+const poorModalTrigger = document.querySelector('#poorModalTrigger');
 
 confirmButton.addEventListener('click', (ev) => {
     //do something
     form = make_form_data();
     response = submit(form);
-    response_object = null;
+    
     response.then(
         function(result){
             result.text().then(
-                result => testText.textContent = result,
+                result => {
+                    if (result === "epic fail") {
+                        poorModalTrigger.click();
+                    }
+                    console.log(result)
+                },
                 error => console.log(error)
             );
         },
