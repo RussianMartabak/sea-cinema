@@ -23,3 +23,4 @@ class TransactionRecord(models.Model):
     seats = models.TextField()
     name = models.TextField()
     title = models.TextField()
+    quantity = models.IntegerField(default=1)

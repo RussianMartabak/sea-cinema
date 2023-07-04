@@ -17,9 +17,11 @@ def movie_detail(request, *args, **kwargs):
 
 def balance(request, *args, **kwargs):
     balance = getBalance()
+    transactions = TransactionRecord.objects.all()
     return render(request, "balance_detail.html", {
         "fund" : format(balance, ','),
-        "fund_numeric" : balance
+        "fund_numeric" : balance,
+        "transactions" : transactions
     })
 
 
@@ -111,7 +113,16 @@ def payment(request):
                 target_seat = movie_seats.filter(seat_number=seat)[0]
                 target_seat.is_empty = False
                 target_seat.save()
-            
+            # now record the transactions
+            transaction = TransactionRecord(
+            total = order_data['total_price'],
+            seats = stringify(booked_seats), 
+            name = order_data['name'],
+            quantity = order_data['quantity'],
+            title = order_data['movie_title']
+            )
+            transaction.save()
+
             return HttpResponse("success")
 
 # helpers
@@ -132,3 +143,9 @@ def convertToArray(string):
 def getTotalPrice(qty, movie_id):
     movie = Movie.objects.get(pk=movie_id)
     return movie.ticket_price * qty
+
+def stringify(array):
+    res = ""
+    for i in array:
+        res += i + ", "
+    return res
