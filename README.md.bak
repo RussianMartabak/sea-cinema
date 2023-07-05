@@ -2,13 +2,13 @@
 A fullstack ticket ordering application  
   
 ## Main Features  
-### Homepage  
+- Homepage  
 See all movies that you can watch  
-### Movie Detail  
+-  Movie Detail  
 See the synopsis, age rating and price of each movie  
-### Seat Booking  
+- Seat Booking  
 Pick the specific seats that you want in a movie screening. You can select up to 6 seats/tickets
-### Balance Page  
+- Balance Page  
 See your balance, top up, wihdraw or even refund your tickets!  
   
 ## Tech Stack  
