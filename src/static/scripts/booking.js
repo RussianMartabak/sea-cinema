@@ -3,7 +3,7 @@ let age_form = document.querySelector("#ageInput");
 let name_form = document.querySelector("#nameInput");
 let age_rating = parseInt(document.querySelector("#ageRating").text);
 let seat_buttons = document.querySelectorAll(".empty_seat");
-let confirm_button = document.querySelector("#confirm")
+let confirm_button = document.querySelector("#confirm");
 
 
 

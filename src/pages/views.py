@@ -130,7 +130,33 @@ def payment(request):
 def post_booking(request):
     request.session['booking_data'] = request.POST
     return HttpResponseRedirect('/')
-    
+
+def refund(request):
+    transaction_id = request.POST["transaction_id"]
+    transaction_entry = TransactionRecord.objects.get(pk=transaction_id)
+    balance = Fund.objects.get(pk=1)
+    balance.current_fund += transaction_entry.total
+    balance.save()
+    #get the seats in the database 
+    # first get movie_id
+    movie = Movie.objects.get(title = transaction_entry.title)
+    movie_id = movie.id
+    # now get the seats from transaction records
+    refunded_seats = StringArraytoNumArray(transaction_entry.seats.split(','))
+    movie_seats = Seating.objects.filter(movie_id_id = movie_id)
+    # now change all the seat in db
+    print(refunded_seats)
+    for refund_seat in refunded_seats:
+        seat = movie_seats.filter(seat_number=refund_seat)
+        print(seat)
+        target_seat = seat[0]
+        target_seat.is_empty = True
+        target_seat.save()
+    #delete trans entry
+    transaction_entry.delete()
+    return HttpResponseRedirect('/')
+
+
 def getBalance():
     
     return Fund.objects.get(pk=1).current_fund
@@ -148,4 +174,11 @@ def stringify(array):
     res = ""
     for i in array:
         res += i + ", "
+    return res
+
+def StringArraytoNumArray(array):
+    res = []
+    for item in array:
+        if item.strip().isnumeric():
+            res.append(int(item.strip()))
     return res

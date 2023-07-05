@@ -29,15 +29,13 @@
       <td>{{transaction.title}}</td>
       <td>{{transaction.seats}}</td>
       <td>{{transaction.total}} IDR</td>
-      <td><button class="btn btn-danger">Refund</button></td>
+      <td><a id="{{transaction.id}}" class="btn btn-danger refund">Refund</a></td>
       
     </tr>
     {% endfor %}
     
   </tbody>
 </table>
-
-
 
 
 
@@ -91,4 +89,5 @@
       </div>
     </div>
   </div>
+<script src="{% static 'scripts/balance.js' %}"></script>
 {% endblock %}

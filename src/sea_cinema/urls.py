@@ -24,6 +24,7 @@ from pages.views import withdraw
 from pages.views import get_booking
 from pages.views import post_booking
 from pages.views import payment
+from pages.views import refund
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,5 +35,6 @@ urlpatterns = [
     path("withdraw", withdraw),
     path("booking/<int:movie_id>", get_booking, name="booking"), 
     path("booking", post_booking),
-    path("payment", payment)
+    path("payment", payment),
+    path("refund", refund)
 ]
