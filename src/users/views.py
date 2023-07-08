@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from data.models import Fund
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 
@@ -24,6 +24,10 @@ def login_user(request):
                 "fund" : format(balance, ',')
             })
 
+def logout_user(request):
+    # POST only
+    logout(request)
+    return HttpResponseRedirect("/")
 
 def getBalance():
     return Fund.objects.get(pk=1).current_fund
