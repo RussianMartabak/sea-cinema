@@ -25,7 +25,7 @@ from pages.views import get_booking
 from pages.views import post_booking
 from pages.views import payment
 from pages.views import refund
-from users.views import login_user, logout_user
+from users.views import login_user, logout_user, register_user
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,4 +40,5 @@ urlpatterns = [
     path("refund", refund),
     path("login", login_user, name="login"),
     path("logout", logout_user, name="logout"),
+    path("register", register_user, name="register")
 ]

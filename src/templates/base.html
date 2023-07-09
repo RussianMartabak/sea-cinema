@@ -26,7 +26,13 @@
             </div>
             <div class="col position-relative">
                 <p class="text-center mb-2 fw-bold">Balance</p>
-                <p class="text-center">{{fund}}</p>
+                <p class="text-center">
+                    {% if fund %}
+                    {{fund}}
+                    {% else %}
+                    You are not logged in
+                    {% endif %}
+                </p>
                 <a class="stretched-link" href="{% url 'balance' %}"></a>
             </div>
         </div>
