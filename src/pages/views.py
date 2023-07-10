@@ -16,13 +16,17 @@ def movie_detail(request, *args, **kwargs):
     return render(request, "movie_detail.html", payload)
 
 def balance(request, *args, **kwargs):
-    balance = getBalance()
-    transactions = TransactionRecord.objects.all()
-    return render(request, "balance_detail.html", {
-        "fund" : format(balance, ','),
-        "fund_numeric" : balance,
-        "transactions" : transactions
-    })
+    logged_in = request.user.is_authenticated
+    if logged_in:
+        balance = Fund.objects.get(user__pk=request.user.id).current_fund
+        transactions = TransactionRecord.objects.all()
+        return render(request, "balance_detail.html", {
+            "fund" : format(balance, ','),
+            "fund_numeric" : balance,
+            "transactions" : transactions
+        })
+    else:
+        return HttpResponseRedirect("/login")
 
 
 def topup(request):

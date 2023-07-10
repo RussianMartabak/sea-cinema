@@ -7,11 +7,9 @@ from .models import User
 
 # Create your views here.
 def login_user(request):
-    balance = getBalance(request)
+    
     if request.method == "GET":
-        return render(request, "login.html", {
-            "fund" : balance
-        })
+        return render(request, "login.html", {})
     elif request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -46,6 +44,9 @@ def register_user(request):
             # success
             new_user = User.objects.create_user(name=name, username=username, age=age, password=password)
             new_user.save()
+            # create new fund for this user
+            new_fund = Fund(user=new_user)
+            new_fund.save()
             user = authenticate(request, username=username, password=password)
             login(request, user)
             return HttpResponseRedirect("/")
@@ -53,7 +54,3 @@ def register_user(request):
             
 
 
-def getBalance(request):
-    # return formatted String
-    fund = Fund.objects.get(pk=1).current_fund
-    return format(fund, ',')
