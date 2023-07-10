@@ -9,10 +9,16 @@ from data.models import TransactionRecord
 
 # Create your views here.
 def movie_detail(request, *args, **kwargs):
-    balance = getBalance()
+    balance = getBalance(request)
+    logged_in = request.user.is_authenticated
+    if balance:
+        balance = format(balance.current_fund, ',')
     movie_object = Movie.objects.get(pk=kwargs["movie_id"])
-    payload = {"movie" : movie_object, "fund" : format(balance, ','), 
-        "price" : format(movie_object.ticket_price, ',')}
+    payload = {"movie" : movie_object, "fund" : balance, 
+        "price" : format(movie_object.ticket_price, ','),
+        "logged_in" : logged_in,
+        "username" : request.user.username
+        }
     return render(request, "movie_detail.html", payload)
 
 def balance(request, *args, **kwargs):
@@ -31,14 +37,14 @@ def balance(request, *args, **kwargs):
 
 def topup(request):
     topup_amount = request.POST["topupAmount"].replace(".", "")
-    balance = Fund.objects.get(pk=1)
+    balance = getBalance(request)
     balance.current_fund += int(topup_amount)
     balance.save()
     return HttpResponseRedirect('/')
 
 def withdraw(request):
     withdraw_amount = int(request.POST["withdrawAmount"].replace(".",""))
-    balance = Fund.objects.get(pk=1)
+    balance = getBalance(request)
     if withdraw_amount <= balance.current_fund:
         balance.current_fund -= int(withdraw_amount)
         balance.save()
@@ -161,9 +167,13 @@ def refund(request):
     return HttpResponseRedirect('/')
 
 
-def getBalance():
-    
-    return Fund.objects.get(pk=1).current_fund
+def getBalance(request):
+    # return fund object on that user if not found return None
+    if request.user.is_authenticated:
+        fund = Fund.objects.get(user__pk=request.user.id)
+        return fund
+    else:
+        return None
 
 def convertToArray(string):
     cs_string = string.replace('\n', '').replace('\r', '').replace(' ', '')
