@@ -51,28 +51,33 @@ def withdraw(request):
     return HttpResponseRedirect('/')
     
 def get_booking(request, movie_id):
-    request.session['movie_id'] = movie_id
-    balance = getBalance()
-    movie_seats = []
-    movie_title = Movie.objects.get(pk=movie_id).title
-    movie_age = Movie.objects.get(pk=movie_id).age_rating
-    # make 2 dimensional list (list containing list) a list of row containing seats
-    data_movie_seats = Seating.objects.filter(movie_id_id=movie_id)
-    current_indice = 0
-    for i in range(8):
-        new_array = []
-        for j in range(8):
-            new_array.append(data_movie_seats[current_indice])
-            current_indice += 1
-        movie_seats.append(new_array)
-    # filter based on foreign key
-    
-    return render(request, "booking.html", {
-        "fund" : format(balance, ','),
-        "movie_title" : movie_title,
-        "movie_seats" : movie_seats,
-        "movie_age" : movie_age
-    })
+    if request.user.is_authenticated:
+        request.session['movie_id'] = movie_id
+        balance = getBalance(request).current_fund #fund object, remember this
+        movie_seats = []
+        movie_title = Movie.objects.get(pk=movie_id).title
+        movie_age = Movie.objects.get(pk=movie_id).age_rating
+        # make 2 dimensional list (list containing list) a list of row containing seats
+        data_movie_seats = Seating.objects.filter(movie_id_id=movie_id)
+        current_indice = 0
+        for i in range(8):
+            new_array = []
+            for j in range(8):
+                new_array.append(data_movie_seats[current_indice])
+                current_indice += 1
+            movie_seats.append(new_array)
+        # filter based on foreign key
+        
+        return render(request, "booking.html", {
+            "fund" : format(balance, ','),
+            "movie_title" : movie_title,
+            "movie_seats" : movie_seats,
+            "movie_age" : movie_age,
+            "logged_in" : request.user.is_authenticated,
+            "username" : request.user.username
+        })
+    else:
+        return HttpResponseRedirect("/login")
 
 def payment(request):
     balance = getBalance()
