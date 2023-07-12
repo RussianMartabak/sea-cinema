@@ -31,9 +31,4 @@ class TransactionRecord(models.Model):
     name = models.TextField()
     title = models.TextField()
     quantity = models.IntegerField(default=1)
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.CASCADE,
-        primary_key=True,
-        default = 1
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)

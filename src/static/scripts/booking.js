@@ -2,6 +2,7 @@ let booked_seats = [];
 
 let seat_buttons = document.querySelectorAll(".empty_seat");
 let confirm_button = document.querySelector("#confirm");
+let info_text = document.querySelector("#infoText");
 
 
 
@@ -21,7 +22,27 @@ confirm_button.addEventListener('click', (ev) => {
     console.log(form_is_valid());
     let formData = make_form_data()
     if (form_is_valid()) {
-        submit(formData)
+        response = submit(formData);
+        response.then(
+            function(result){
+                result.text().then(
+                    result => {
+                        if (result === "fail") {
+                            info_text.textContent = "You are underaged"
+                        }
+                        else {
+                            window.open("/payment", "_self")
+                        }
+                        console.log(result)
+                    },
+                    error => console.log(error)
+                );
+            },
+            function(error){
+                console.log(error);
+            }
+        )
+
     }
 })
 
@@ -63,7 +84,7 @@ function getCookie(name) {
 
 async function submit(form) {
     let csrftoken = getCookie('csrftoken');
-    await fetch('/booking', {
+    return await fetch('/booking', {
         method : "POST",
         headers : {
             
@@ -71,5 +92,5 @@ async function submit(form) {
         },
         body: form
     });
-    window.open("/payment", "_self")
+    
 }

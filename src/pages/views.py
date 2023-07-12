@@ -80,71 +80,81 @@ def get_booking(request, movie_id):
         return HttpResponseRedirect("/login")
 
 def payment(request):
-    balance = getBalance()
-    booking_data = request.session.get('booking_data')
-    #this make booked seats into proper sequence of numbers
-    booked_seats = convertToArray(booking_data["booked_seats"]) 
-    #movie_id is already saved on session
-    movie_id = request.session['movie_id']
-    quantity = len(booked_seats)
-    total_price = getTotalPrice(len(booked_seats), movie_id)
-    # pack all this things (name, total price, quantity, movie_id into a dictionary and put it in session)
-    # it all will be used in the POST request (redirect to home too)
-    order_data = {}
-    order_data['movie_title'] = Movie.objects.get(pk=movie_id).title
-    order_data['name'] = booking_data["name"]
-    order_data['total_price'] = total_price
-    order_data['quantity'] = quantity
-    order_data['booked_seats'] = booked_seats
-    order_data['movie_id'] = movie_id
-    request.session['order_data'] = order_data
+    if request.user.is_authenticated:
+        balance = getBalance(request).current_fund
+        booking_data = request.session.get('booking_data')
+        #this make booked seats into proper sequence of numbers
+        booked_seats = convertToArray(booking_data["booked_seats"]) 
+        #movie_id is already saved on session
+        movie_id = request.session['movie_id']
+        quantity = len(booked_seats)
+        total_price = getTotalPrice(len(booked_seats), movie_id)
+        # pack all this things (name, total price, quantity, movie_id into a dictionary and put it in session)
+        # it all will be used in the POST request (redirect to home too)
+        order_data = {}
+        order_data['movie_title'] = Movie.objects.get(pk=movie_id).title
+        order_data['total_price'] = total_price
+        order_data['quantity'] = quantity
+        order_data['booked_seats'] = booked_seats
+        order_data['movie_id'] = movie_id
+        request.session['order_data'] = order_data
 
-    if request.method == "GET":
-        return render(request, "payment.html", {
-            "booking_seats" : booked_seats,
-            "name" : booking_data["name"],
-            "fund" : format(balance, ','),
-            "total_price" : total_price,
-            "movie_title" : Movie.objects.get(pk=movie_id).title,
-            "quantity" : quantity,
-            'ticket_price' : Movie.objects.get(pk=movie_id).ticket_price
-        })
-    elif request.method == "POST":
-        order_data = request.session['order_data']
-        if order_data['total_price'] > balance:
-            return HttpResponse("epic fail")
+        if request.method == "GET":
+            return render(request, "payment.html", {
+                "booking_seats" : booked_seats,
+                "name" : request.user.name,
+                "fund" : format(balance, ','),
+                "total_price" : total_price,
+                "movie_title" : Movie.objects.get(pk=movie_id).title,
+                "quantity" : quantity,
+                'ticket_price' : Movie.objects.get(pk=movie_id).ticket_price,
+                'logged_in' : True,
+                'username' : request.user.username
+            })
+        elif request.method == "POST":
+            order_data = request.session['order_data']
+            if order_data['total_price'] > balance:
+                return HttpResponse("epic fail")
+            else:
+                # fill in the seats and also the transaction records
+                # deduct from balance
+                current_balance = Fund.objects.get(pk=1)
+                current_balance.current_fund -= order_data['total_price']
+                current_balance.save()
+                #book the seat
+                booked_seats = order_data['booked_seats']
+                movie_id = order_data['movie_id']
+                movie_seats = Seating.objects.filter(movie_id_id = movie_id)
+                for seat in booked_seats:
+                    # search based on seat number and movie id
+                    target_seat = movie_seats.filter(seat_number=seat)[0]
+                    target_seat.is_empty = False
+                    target_seat.save()
+                # now record the transactions
+                transaction = TransactionRecord(
+                total = order_data['total_price'],
+                seats = stringify(booked_seats), 
+                name = order_data['name'],
+                quantity = order_data['quantity'],
+                title = order_data['movie_title']
+                )
+                transaction.save()
+
+                return HttpResponse("success")
         else:
-            # fill in the seats and also the transaction records
-            # deduct from balance
-            current_balance = Fund.objects.get(pk=1)
-            current_balance.current_fund -= order_data['total_price']
-            current_balance.save()
-            #book the seat
-            booked_seats = order_data['booked_seats']
-            movie_id = order_data['movie_id']
-            movie_seats = Seating.objects.filter(movie_id_id = movie_id)
-            for seat in booked_seats:
-                # search based on seat number and movie id
-                target_seat = movie_seats.filter(seat_number=seat)[0]
-                target_seat.is_empty = False
-                target_seat.save()
-            # now record the transactions
-            transaction = TransactionRecord(
-            total = order_data['total_price'],
-            seats = stringify(booked_seats), 
-            name = order_data['name'],
-            quantity = order_data['quantity'],
-            title = order_data['movie_title']
-            )
-            transaction.save()
-
-            return HttpResponse("success")
+            return HttpResponseRedirect("/login")
 
 # helpers
 
 def post_booking(request):
-    request.session['booking_data'] = request.POST
-    return HttpResponseRedirect('/')
+    # age restrict first
+    movie_id = request.session["movie_id"]
+    movie_age_rating = Movie.objects.get(id=movie_id).age_rating
+    if request.user.age < movie_age_rating:
+        return HttpResponse('fail')
+    else:
+        request.session['booking_data'] = request.POST
+        return HttpResponse('succ')
 
 def refund(request):
     transaction_id = request.POST["transaction_id"]
