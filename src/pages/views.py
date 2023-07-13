@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from data.models import Seating
 from django.http import HttpResponse
 from data.models import TransactionRecord
-
+from users.models import User
 
 # Create your views here.
 def movie_detail(request, *args, **kwargs):
@@ -25,11 +25,13 @@ def balance(request, *args, **kwargs):
     logged_in = request.user.is_authenticated
     if logged_in:
         balance = Fund.objects.get(user__pk=request.user.id).current_fund
-        transactions = TransactionRecord.objects.all()
+        transactions = TransactionRecord.objects.filter(user_id=request.user.id)
         return render(request, "balance_detail.html", {
             "fund" : format(balance, ','),
             "fund_numeric" : balance,
-            "transactions" : transactions
+            "transactions" : transactions,
+            "username": request.user.username,
+            "logged_in" : request.user.is_authenticated
         })
     else:
         return HttpResponseRedirect("/login")
@@ -118,7 +120,7 @@ def payment(request):
             else:
                 # fill in the seats and also the transaction records
                 # deduct from balance
-                current_balance = Fund.objects.get(pk=1)
+                current_balance = Fund.objects.get(user__pk=request.user.id)
                 current_balance.current_fund -= order_data['total_price']
                 current_balance.save()
                 #book the seat
@@ -131,12 +133,14 @@ def payment(request):
                     target_seat.is_empty = False
                     target_seat.save()
                 # now record the transactions
+                
                 transaction = TransactionRecord(
                 total = order_data['total_price'],
                 seats = stringify(booked_seats), 
-                name = order_data['name'],
+                name = request.user.name,
                 quantity = order_data['quantity'],
-                title = order_data['movie_title']
+                title = order_data['movie_title'],
+                user = request.user
                 )
                 transaction.save()
 
