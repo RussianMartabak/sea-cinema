@@ -163,7 +163,7 @@ def post_booking(request):
 def refund(request):
     transaction_id = request.POST["transaction_id"]
     transaction_entry = TransactionRecord.objects.get(pk=transaction_id)
-    balance = Fund.objects.get(pk=1)
+    balance = getBalance(request)
     balance.current_fund += transaction_entry.total
     balance.save()
     #get the seats in the database 

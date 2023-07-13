@@ -7,6 +7,8 @@ https://github.com/RussianMartabak/sea-cinema
 See all movies that you can watch  
 ### Movie Detail  
 See the synopsis, age rating and price of each movie  
+### Authentication  
+Each bookings is personalized to each user  
 ### Seat Booking  
 Pick the specific seats that you want in a movie screening. You can select up to 6 seats/tickets
 ### Balance Page  
