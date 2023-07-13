@@ -14,7 +14,11 @@
     <div class="container-fluid pt-3 border-bottom">
         <div class="row justify-content-between">
             <div class="col">
-
+                {% if logged_in %}
+                {% include "microtemplate/logged_in.html" %}
+                {% else %}
+                {% include "microtemplate/anon.html" %}
+                {% endif %}
             </div>
             <div class="col inv-link" id="home" >
                 <h3 class="text-center fw-bold mb-0">SEA Cinema</h2>
@@ -22,7 +26,13 @@
             </div>
             <div class="col position-relative">
                 <p class="text-center mb-2 fw-bold">Balance</p>
-                <p class="text-center">{{fund}}</p>
+                <p class="text-center">
+                    {% if fund %}
+                    {{fund}}
+                    {% else %}
+                    You are not logged in
+                    {% endif %}
+                </p>
                 <a class="stretched-link" href="{% url 'balance' %}"></a>
             </div>
         </div>

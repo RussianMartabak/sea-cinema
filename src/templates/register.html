@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <p class="text-center mt-3">{{message}}</p>
+    {% endfor %}
+{% endif %}
+<h4 class="text-center mt-4">Login</h4>
+<div class="container d-flex justify-content-center">
+    <div class="w-50">
+        <form action="/register" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="usernameInput" class="form-label">Username</label>
+                <input name="username" type="text" class="form-control" id="usernameInput" required>
+                
+              </div>
+            <div class="mb-3">
+              <label for="nameInput" class="form-label">Name</label>
+              <input name="name" type="text" class="form-control" id="nameInput" required>
+              
+            </div>
+            <div class="mb-3">
+                <label for="ageInput" class="form-label">Age</label>
+                <input name="age" type="number" class="form-control" id="ageInput" required>
+                
+              </div>
+            <div class="mb-3">
+              <label for="passwordInput" class="form-label">Password</label>
+              <input type="password" class="form-control" id="passwordInput" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+          </form>
+    </div>
+</div>
+
+
+
+{% endblock %}
